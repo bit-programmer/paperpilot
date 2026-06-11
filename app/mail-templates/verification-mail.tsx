@@ -20,25 +20,6 @@ const VerifyEmail = ({
         <Container className="mobile:mt-0 mx-auto mt-8 w-full max-w-[640px]">
           <Section>
             <Section className="bg-bg mobile:px-2 px-6 py-4">
-              {/* Header */}
-              <Section className="mb-3 px-6">
-                <Row>
-                  <Column className="w-1/2 py-[7px] align-middle">
-                    <Img
-                      src="https://www.saiphex.com/favicon.ico"
-                      alt={companyName}
-                      width={23}
-                    />
-                  </Column>
-
-                  <Column align="right" className="w-1/2 py-[7px] align-middle">
-                    <Text className="font-13 m-0 text-right">
-                      {companyName}
-                    </Text>
-                  </Column>
-                </Row>
-              </Section>
-
               {/* Content */}
               <Section className="bg-bg-2 mobile:px-6 mobile:py-12 rounded-[8px] px-[40px] py-[64px] text-center">
                 <Heading as="h1" className="font-28 text-fg m-0">
