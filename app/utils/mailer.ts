@@ -1,6 +1,6 @@
 import nodemailer from 'nodemailer';
-import env from './env';
-import { logger } from '@/app/lib/logger';
+import env from './env.server';
+import { logger } from '@/app/lib/logger.server';
 
 const transporter = nodemailer.createTransport({
     host: env.MAIL_HOST,
