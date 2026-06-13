@@ -14,5 +14,9 @@ export const clientPaths = {
     signup: {
         path: "/ui/signup",
         getHref: () => "/ui/signup"
+    },
+    organizationPage: {
+        path: "/ui/dashboard/organization",
+        getHref: (id?: string) => id ? `/ui/dashboard/organization/${id}` : "/ui/dashboard/organization"
     }
 }

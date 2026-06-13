@@ -6,3 +6,12 @@ export interface Organization {
     logo?: string | null | undefined;
     metadata?: unknown;
 }
+
+export interface NewOrganization {
+    name: string;
+    slug: string;
+    logo?: string | null | undefined;
+    metadata: Record<string, unknown>;
+    userId?: string;
+    keepCurrentActiveOrganization: boolean
+}

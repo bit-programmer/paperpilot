@@ -1,4 +1,5 @@
 import { authClient } from "@/app/lib/auth-client";
+import { NewOrganization, Organization } from "../interfaces/organization.interface";
 
 export const organizationService = {
     async getAll() {
@@ -16,5 +17,9 @@ export const organizationService = {
         })
 
         return { organizations, error };
+    },
+    async createNewOrganization(organization: NewOrganization) {
+        const { data, error } = await authClient.organization.create(organization);
+        return { data, error };
     }
 }
