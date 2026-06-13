@@ -1,3 +1,10 @@
+import { clientPaths } from "./path.client"
+
 export const PROTECTED_ROUTES = [
-    "/ui/dashboard"
+    clientPaths.dashboard.path
+]
+
+export const NON_PROTECTED_ROUTES = [
+    clientPaths.signin.path,
+    clientPaths.signup.path
 ]

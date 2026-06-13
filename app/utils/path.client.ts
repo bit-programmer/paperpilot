@@ -10,5 +10,9 @@ export const clientPaths = {
     signin: {
         path: "/ui/signin",
         getHref: () => "/ui/signin"
+    },
+    signup: {
+        path: "/ui/signup",
+        getHref: () => "/ui/signup"
     }
 }
