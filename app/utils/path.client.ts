@@ -6,5 +6,9 @@ export const clientPaths = {
     confirmEmailNotification: {
         path: "/ui/confirm-email-notification",
         getHref: () => "/ui/confirm-email-notification"
+    },
+    signin: {
+        path: "/ui/signin",
+        getHref: () => "/ui/signin"
     }
 }
