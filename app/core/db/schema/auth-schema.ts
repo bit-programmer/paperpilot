@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm";
-import { pgTable, text, timestamp, boolean, index } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, boolean, index, varchar } from "drizzle-orm/pg-core";
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -26,6 +26,8 @@ export const session = pgTable(
       .notNull(),
     ipAddress: text("ip_address"),
     userAgent: text("user_agent"),
+    activeOrganizationId: text("active_organization_id"),
+	  activeTeamId: text("active_team_id"),
     userId: text("user_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
@@ -91,3 +93,57 @@ export const accountRelations = relations(account, ({ one }) => ({
     references: [user.id],
   }),
 }));
+
+export const organization = pgTable("organization", {
+	id: text("id").primaryKey(),
+	name: text("name").notNull(),
+	slug: varchar("slug", { length: 255 }).notNull().unique(),
+	logo: text("logo"),
+	metadata: text("metadata"),
+	createdAt: timestamp("created_at", { precision: 6, withTimezone: true }).notNull(),
+});
+
+export const member = pgTable("member", {
+	id: text("id").primaryKey(),
+	userId: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
+	organizationId: text("organization_id").notNull().references(() => organization.id, { onDelete: "cascade" }),
+	role: text("role").notNull(),
+	createdAt: timestamp("created_at", { precision: 6, withTimezone: true }).notNull(),
+});
+
+export const invitation = pgTable("invitation", {
+	id: text("id").primaryKey(),
+	email: text("email").notNull(),
+	inviterId: text("inviter_id").notNull().references(() => user.id, { onDelete: "cascade" }),
+	organizationId: text("organization_id").notNull().references(() => organization.id, { onDelete: "cascade" }),
+	role: text("role"),
+	status: text("status").notNull(),
+	createdAt: timestamp("created_at", { precision: 6, withTimezone: true }).notNull(),
+	expiresAt: timestamp("expires_at", { precision: 6, withTimezone: true }).notNull(),
+  teamId: text("team_id"),
+});
+
+export const teamMember = pgTable("team_member", {
+	id: text("id").primaryKey(),
+	teamId: text("team_id").notNull().references(() => team.id, { onDelete: "cascade" }),
+	userId: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
+	createdAt: timestamp("created_at", { precision: 6, withTimezone: true }),
+});
+
+export const organizationRole = pgTable("organization_role", {
+	id: text("id").primaryKey(),
+	organizationId: text("organization_id").notNull().references(() => organization.id, { onDelete: "cascade" }),
+	role: text("role").notNull(),
+	permission: text("permission").notNull(),
+	createdAt: timestamp("created_at", { precision: 6, withTimezone: true }).notNull(),
+	updatedAt: timestamp("updated_at", { precision: 6, withTimezone: true }),
+});
+
+
+export const team = pgTable("team", {
+	id: text("id").primaryKey(),
+	name: text("name").notNull(),
+	organizationId: text("organization_id").notNull().references(() => organization.id, { onDelete: "cascade" }),
+	createdAt: timestamp("created_at", { precision: 6, withTimezone: true }).notNull(),
+	updatedAt: timestamp("updated_at", { precision: 6, withTimezone: true }),
+});
