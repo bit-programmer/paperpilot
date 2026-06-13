@@ -1,13 +1,11 @@
 import pino from 'pino';
-import env from '@/app/utils/env';
-
-const isDevelopment = env.NODE_ENV === 'development';
-const isServer = typeof window === 'undefined';
+import env from '@/app/utils/env.server';
 
 export const logger = pino({
   level: env.LOG_LEVEL,
-  transport: isDevelopment && isServer
-    ? {
+  transport:
+    env.NODE_ENV === 'development'
+      ? {
         target: 'pino-pretty',
         options: {
           colorize: true,
@@ -15,8 +13,5 @@ export const logger = pino({
           translateTime: 'SYS:yyyy-mm-dd HH:MM:ss',
         },
       }
-    : undefined,
-  browser: {
-    asObject: true,
-  },
+      : undefined,
 });
