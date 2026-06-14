@@ -118,7 +118,7 @@ const EmptyState = ({ label }: { label: string }) => (
 );
 
 // ─── Row Components ───────────────────────────────────────────────────────────
-const SentInvitationRow = ({ inv }: { inv: { id: string; email: string; role: string | null; status: string; expiresAt: Date; createdAt: Date } }) => {
+const SentInvitationRow = ({ inv, onCancel }: { inv: { id: string; email: string; role: string | null; status: string; expiresAt: Date; createdAt: Date }, onCancel: (id: string) => void }) => {
     const badge = getRoleBadgeStyle(inv.role);
     const statusColor = inv.status === "pending" ? "#fbbf24" : inv.status === "accepted" ? "#34d399" : "#f87171";
     return (
@@ -144,6 +144,16 @@ const SentInvitationRow = ({ inv }: { inv: { id: string; email: string; role: st
                 <span style={{ fontSize: "0.72rem", fontWeight: 600, padding: "3px 10px", borderRadius: 20, background: `${statusColor}18`, color: statusColor, border: `1px solid ${statusColor}30` }}>
                     {inv.status}
                 </span>
+                {inv.status === "pending" && (
+                    <button 
+                        onClick={() => onCancel(inv.id)}
+                        style={{ fontSize: "0.72rem", fontWeight: 600, padding: "3px 10px", borderRadius: 20, background: "var(--background)", color: "#ef4444", border: "1px solid #fecaca", cursor: "pointer", transition: "all 0.2s" }}
+                        onMouseOver={(e) => e.currentTarget.style.background = "#fef2f2"}
+                        onMouseOut={(e) => e.currentTarget.style.background = "var(--background)"}
+                    >
+                        Cancel
+                    </button>
+                )}
             </div>
         </div>
     );
@@ -342,7 +352,7 @@ export default function OrganizationDashboard({ params }: { params: Promise<{ id
     const { data: session } = authClient.useSession();
 
     const { organization: org, loading: orgLoading, refetch: refetchOrg } = useFullOrganization(id);
-    const { invitations: sentInvitations, loading: sentLoading, refetch: refetchInvites } = useSentInvitations(id);
+    const { invitations: sentInvitations, loading: sentLoading, refetch: refetchInvites, cancel: cancelInvite } = useSentInvitations(id);
     const { teams: visibleTeams, loading: visibleTeamsLoading, refetch: refetchTeams } = useVisibleTeams(id);
 
     const [showInviteModal, setShowInviteModal] = useState(false);
@@ -502,7 +512,7 @@ export default function OrganizationDashboard({ params }: { params: Promise<{ id
                                 ) : (
                                     <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                                         {pendingInvitations.map((inv) => (
-                                            <SentInvitationRow key={inv.id} inv={inv} />
+                                            <SentInvitationRow key={inv.id} inv={inv} onCancel={cancelInvite} />
                                         ))}
                                     </div>
                                 )}

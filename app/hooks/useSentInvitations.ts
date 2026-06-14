@@ -57,5 +57,23 @@ export const useSentInvitations = (organizationId: string | null) => {
         fetch();
     }, [fetch]);
 
-    return { invitations, loading, error, refetch: fetch };
+    const cancel = async (invitationId: string) => {
+        try {
+            const { error: err } = await authClient.organization.cancelInvitation({
+                invitationId
+            });
+            if (err) {
+                toast.error(err.message || "Failed to cancel invitation");
+                return false;
+            }
+            toast.success("Invitation cancelled successfully");
+            fetch();
+            return true;
+        } catch (e) {
+            toast.error("Failed to cancel invitation");
+            return false;
+        }
+    };
+
+    return { invitations, loading, error, refetch: fetch, cancel };
 };
