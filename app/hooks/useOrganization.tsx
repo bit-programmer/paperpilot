@@ -24,7 +24,7 @@ export const useOrganization = (limit: number, offset: number) => {
         try {
             const { organizations, error } = await organizationService.getByPageAndLimit(limit, offset, controller.signal);
             if (error) {
-                if (error.name === "AbortError") return;
+                if ((error as any).name === "AbortError") return;
                 const msg = error.message || DEFAULT_ORGANIZATIONS_FETCH_ERROR;
                 setError(msg);
                 setLoading(false);

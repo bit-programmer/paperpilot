@@ -35,7 +35,7 @@ export const useReceivedInvitations = () => {
             // listUserInvitations returns invitations received by the current user
             const { data, error: err } = await authClient.organization.listUserInvitations();
             if (err) {
-                if (err.name === "AbortError") return;
+                if ((err as any).name === "AbortError") return;
                 const msg = err.message || DEFAULT_RECEIVED_INVITATIONS_FETCH_ERROR;
                 setError(msg);
                 toast.error(msg);

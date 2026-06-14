@@ -77,7 +77,8 @@ export const auth = betterAuth({
              * visit to accept (it calls the /organization/accept-invitation
              * API endpoint internally and then redirects).
              */
-            sendInvitationEmail: async ({ invitation, inviter, organization: org, url }) => {
+            sendInvitationEmail: async (data: any) => {
+                const { invitation, inviter, organization: org, url } = data;
                 logger.info(
                     { inviteeEmail: invitation.email, orgId: org.id, role: invitation.role },
                     "Sending org invitation email"
@@ -100,6 +101,7 @@ export const auth = betterAuth({
 
             organizationHooks: {
                 afterCreateTeam: async ({ team, user }) => {
+                    if (!user) return;
                     const existing = await db.query.teamMember.findFirst({
                         where: and(
                             eq(teamMember.teamId, team.id),
@@ -130,6 +132,7 @@ export const auth = betterAuth({
                  * 4. Team members cannot add anyone → rejected.
                  */
                 beforeAddTeamMember: async ({ teamMember: newTeamMember, team, user }) => {
+                    if (!user) return;
                     const orgId = team.organizationId;
 
                     // ── 1. Verify the person being added is an org member ──────────

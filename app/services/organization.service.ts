@@ -39,9 +39,7 @@ export const organizationService = {
 
     /** Invitations the current user received (pending) */
     async getReceivedInvitations() {
-        const { data, error } = await authClient.organization.getInvitation({
-            // @ts-expect-error — listInvitations without org shows received ones per Better Auth spec
-        });
+        const { data, error } = await authClient.organization.listUserInvitations();
         return { data, error };
     },
 

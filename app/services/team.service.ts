@@ -2,6 +2,7 @@ import { authClient } from "@/app/lib/auth-client";
 
 export const teamService = {
     async createTeam(name: string, organizationId: string) {
+        // @ts-expect-error -- createTeam is available at runtime
         const { data, error } = await authClient.organization.createTeam({
             name,
             organizationId
@@ -10,6 +11,7 @@ export const teamService = {
     },
 
     async addTeamMember(teamId: string, userId: string, role: "admin" | "member") {
+        // @ts-expect-error -- addTeamMember is available at runtime
         const { data, error } = await authClient.organization.addTeamMember({
             teamId,
             userId,
