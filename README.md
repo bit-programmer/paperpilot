@@ -122,3 +122,10 @@ Manages the actual data assets of the platform.
    - Clicking an article row routes the user to the dedicated `/article/[articleId]` editor page.
    - The user completes their checklist and sets a decision. 
    - `submitArticleReviewServer` saves their checklist state to the database, instantly updating the global Team Progress tracker visible to all members.
+
+---
+
+## Acknowledgements
+
+**AI-Assisted Development:**  
+Parts of this project, including its documentation, boilerplate code, and architectural cross-verification, were developed with the assistance of an AI coding agent. The AI was used to rapidly prototype ideas, generate rigorous documentation, and cross-verify implementation approaches to ensure best practices across the full stack.
