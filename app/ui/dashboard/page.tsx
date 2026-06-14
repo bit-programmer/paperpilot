@@ -134,7 +134,7 @@ const OrgCard = ({ org, onClick }: { org: Organization; onClick: () => void }) =
     <button
         onClick={onClick}
         style={{
-            all: "unset", cursor: "pointer", display: "block", width: "100%",
+            all: "unset", boxSizing: "border-box", cursor: "pointer", display: "block", width: "100%",
             borderRadius: 14, padding: "18px 20px",
             background: "var(--card)", border: "1px solid var(--border)",
             transition: "all 0.2s ease",
