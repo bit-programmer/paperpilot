@@ -6,5 +6,6 @@ export const PROTECTED_ROUTES = [
 
 export const NON_PROTECTED_ROUTES = [
     clientPaths.signin.path,
-    clientPaths.signup.path
+    clientPaths.signup.path,
+    clientPaths.confirmEmailNotification.path
 ]
