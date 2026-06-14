@@ -127,6 +127,13 @@ export const teamMember = pgTable("team_member", {
 	id: text("id").primaryKey(),
 	teamId: text("team_id").notNull().references(() => team.id, { onDelete: "cascade" }),
 	userId: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
+	/**
+	 * Team-level role: "admin" or "member".
+	 * - admin  → can add/remove team members, full article access
+	 * - member → article access only, cannot add/remove members
+	 * The team creator is assigned "admin" via the afterCreateTeam hook.
+	 */
+	role: text("role").notNull().default("member"),
 	createdAt: timestamp("created_at", { precision: 6, withTimezone: true }),
 });
 

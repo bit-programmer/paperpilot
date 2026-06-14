@@ -23,16 +23,18 @@ export const useOrganization = (limit: number, offset: number) => {
         // Fetch all the organizations with the given range
         try {
             const { organizations, error } = await organizationService.getByPageAndLimit(limit, offset, controller.signal);
-            if(error) {
+            if (error) {
+                if (error.name === "AbortError") return;
                 const msg = error.message || DEFAULT_ORGANIZATIONS_FETCH_ERROR;
                 setError(msg);
                 setLoading(false);
                 toast.error(msg);
             }
             setOrganizations(organizations);
-        } catch(e) {
+        } catch(e: any) {
+            if (e?.name === "AbortError") return;
             const msg = e instanceof Error ? e.message : DEFAULT_ORGANIZATIONS_FETCH_ERROR;
-            logger.error(msg);
+            logger.error({ err: e, msg });
             setError(msg);
             toast.error(msg);
         } finally {
@@ -50,7 +52,7 @@ export const useOrganization = (limit: number, offset: number) => {
     }, [fetchOrganizations]);
 
     return {
-        loading, error, organizations
+        loading, error, organizations, refetch: fetchOrganizations
     }
 
 };
