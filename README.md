@@ -134,7 +134,7 @@ Parts of this project, including its documentation, boilerplate code, and archit
 
 ## Architectural Note on Performance (For Management & Reviewers)
 
-Currently, you may notice some latency when loading the dashboard or authenticating. As the lead developer, I want to clarify that **this is an infrastructure configuration issue, not a codebase optimization issue**. 
+Currently, you may notice some latency when loading the dashboard or authenticating.I want to clarify that **this is an infrastructure configuration issue, not a codebase optimization issue**. 
 
 Here is the technical breakdown of the bottleneck:
 
