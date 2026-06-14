@@ -24,6 +24,16 @@ PaperPilot is an intelligent workspace platform designed to help research teams 
 
 ---
 
+## Prerequisites
+
+Before setting up the project locally, ensure you have the following installed on your machine:
+- **Node.js** (v18 or higher)
+- **pnpm** (v8 or higher) - We use `pnpm` as our package manager.
+- **PostgreSQL** - You can install PostgreSQL locally via Homebrew (`brew install postgresql`) or use a cloud provider like [Supabase](https://supabase.com/) or [Neon](https://neon.tech/).
+- **Git** - For version control.
+
+---
+
 ## Local Setup
 
 ### 1. Clone the repository and install dependencies
@@ -32,23 +42,37 @@ Use `pnpm` (recommended) to install the project dependencies.
 pnpm install
 ```
 
-### 2. Set up Environment Variables
+### 2. Set up PostgreSQL Database
+If you are running PostgreSQL locally, create a new database for the project:
+```bash
+# Enter the Postgres CLI
+psql postgres
+
+# Create a new user and database
+CREATE USER paperpilot_user WITH PASSWORD 'your_password';
+CREATE DATABASE paperpilot_db OWNER paperpilot_user;
+```
+If using a cloud provider like Supabase, simply create a new project and copy your provided Postgres connection string.
+
+### 3. Set up Environment Variables
 Copy the provided `.env.example` file to create your own local `.env`.
 ```bash
 cp .env.example .env
 ```
-Ensure you fill out:
-- `DATABASE_URL`: Your PostgreSQL connection string. (If using Supabase, append `?pgbouncer=true` if using the pooler port 6543).
-- `BETTER_AUTH_SECRET`: Generate a random base64 string for secure session signing.
-- `MAIL_USERNAME` / `MAIL_PASSWORD`: Used for sending out team invitations.
+Ensure you fill out the following crucial fields in your new `.env` file:
+- `DATABASE_URL`: Your PostgreSQL connection string. 
+  - *Local example*: `postgresql://paperpilot_user:your_password@localhost:5432/paperpilot_db`
+  - *Supabase example*: `postgresql://postgres.[your-ref]:[password]@aws-0-ap-southeast-1.pooler.supabase.com:6543/postgres?pgbouncer=true` (Make sure to append `?pgbouncer=true` if using the pooler port 6543).
+- `BETTER_AUTH_SECRET`: Used for secure session signing. Generate a random base64 string using: `openssl rand -base64 32`
+- `MAIL_USERNAME` / `MAIL_PASSWORD`: Credentials for your SMTP provider (e.g., Gmail App Passwords) used for sending out team invitations.
 
-### 3. Push the Database Schema
+### 4. Push the Database Schema
 PaperPilot uses Drizzle to manage schemas. You must push the schemas to your fresh database before running the app.
 ```bash
 npx drizzle-kit push
 ```
 
-### 4. Run the Development Server
+### 5. Run the Development Server
 ```bash
 pnpm run dev
 ```
