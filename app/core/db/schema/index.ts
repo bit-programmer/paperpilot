@@ -1,1 +1,2 @@
 export { user, session, account, verification, userRelations, sessionRelations, accountRelations, organization, member, invitation, teamMember, organizationRole, team } from "./auth-schema";
+export { article, articleReview, articleRelations, articleReviewRelations } from "./workspace-schema";

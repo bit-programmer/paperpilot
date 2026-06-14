@@ -7,6 +7,8 @@ import { clientPaths } from "@/app/utils/path.client";
 import { useTeamDetails } from "@/app/hooks/useTeamDetails";
 import { useFullOrganization } from "@/app/hooks/useFullOrganization";
 import { AddTeamMemberModal } from "./components/AddTeamMemberModal";
+import { UploadArticlesModal } from "./components/UploadArticlesModal";
+import { ArticleReviewWorkspace } from "./components/ArticleReviewWorkspace";
 import { toast } from "sonner";
 
 const ACCENT = "oklch(0.5 0.25 290)";
@@ -26,6 +28,11 @@ const ArrowLeftIcon = () => (
 const PlusIcon = () => (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M5 12h14M12 5v14" />
+    </svg>
+);
+const UploadIcon = () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="17 8 12 3 7 8" /><line x1="12" y1="3" x2="12" y2="15" />
     </svg>
 );
 const ClockIcon = () => (
@@ -114,6 +121,8 @@ export default function TeamDashboard({ params }: { params: Promise<{ id: string
 
     const { team, loading: teamLoading, refetch: refetchTeam } = useTeamDetails(teamId);
     const [showAddMemberModal, setShowAddMemberModal] = useState(false);
+    const [showUploadModal, setShowUploadModal] = useState(false);
+    const [refreshWorkspace, setRefreshWorkspace] = useState(0);
 
     const { organization: org } = useFullOrganization(organizationId);
     const isOrgAdmin = org?.members?.find(m => m.userId === session?.user.id)?.role === "admin";
@@ -192,6 +201,15 @@ export default function TeamDashboard({ params }: { params: Promise<{ id: string
                                         <span style={{ fontSize: "0.85rem", fontWeight: 600, color: "var(--foreground)" }}>{session.user.name}</span>
                                         <span style={{ fontSize: "0.7rem", color: "var(--muted-foreground)" }}>{session.user.email}</span>
                                     </div>
+                                    <button 
+                                        onClick={async () => {
+                                            await authClient.signOut();
+                                            router.push("/");
+                                        }}
+                                        style={{ marginLeft: 10, padding: "6px 12px", background: "var(--muted)", color: "var(--foreground)", border: "none", borderRadius: 8, fontSize: "0.75rem", fontWeight: 600, cursor: "pointer" }}
+                                    >
+                                        Sign out
+                                    </button>
                                 </div>
                             )}
                             <div style={{ display: "flex", gap: 12 }}>
@@ -212,6 +230,20 @@ export default function TeamDashboard({ params }: { params: Promise<{ id: string
                                         <PlusIcon /> Add Member
                                     </button>
                                 )}
+                                <button
+                                    onClick={() => setShowUploadModal(true)}
+                                    style={{
+                                        display: "flex", alignItems: "center", gap: 8,
+                                        padding: "10px 18px", borderRadius: 12, border: "1px solid var(--border)",
+                                        background: "transparent", color: "var(--foreground)",
+                                        fontWeight: 700, fontSize: "0.875rem", cursor: "pointer",
+                                        transition: "all 0.2s",
+                                    }}
+                                    onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--muted)"; }}
+                                    onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent"; }}
+                                >
+                                    <UploadIcon /> Upload Articles
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -235,6 +267,14 @@ export default function TeamDashboard({ params }: { params: Promise<{ id: string
                                 </div>
                             )}
                         </div>
+
+                        {/* ── Article Review Workspace ── */}
+                        <div style={{ marginTop: 40 }}>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+                                <SectionHeader icon={<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" /><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" /></svg>} title="Article Review Workspace" />
+                            </div>
+                            <ArticleReviewWorkspace key={refreshWorkspace} teamId={teamId} />
+                        </div>
                     </div>
                 )}
             </div>
@@ -246,6 +286,13 @@ export default function TeamDashboard({ params }: { params: Promise<{ id: string
                 teamId={teamId}
                 existingMemberIds={team?.members?.map(m => m.userId) || []}
                 onSuccess={() => refetchTeam()}
+            />
+
+            <UploadArticlesModal
+                isOpen={showUploadModal}
+                onClose={() => setShowUploadModal(false)}
+                teamId={teamId}
+                onSuccess={() => setRefreshWorkspace(prev => prev + 1)}
             />
         </>
     );
