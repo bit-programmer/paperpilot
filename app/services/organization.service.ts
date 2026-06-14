@@ -1,5 +1,5 @@
 import { authClient } from "@/app/lib/auth-client";
-import { NewOrganization, Organization } from "../interfaces/organization.interface";
+import { NewOrganization } from "../interfaces/organization.interface";
 
 export const organizationService = {
     async getAll() {
@@ -20,6 +20,12 @@ export const organizationService = {
     },
     async createNewOrganization(organization: NewOrganization) {
         const { data, error } = await authClient.organization.create(organization);
+        return { data, error };
+    },
+    async checkSlug(slug: string) {
+        const { data, error } = await authClient.organization.checkSlug({
+            slug
+        });
         return { data, error };
     }
 }
