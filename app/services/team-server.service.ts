@@ -2,7 +2,7 @@
 
 import db from "@/app/core/db";
 import { team, teamMember, user, member } from "@/app/core/db/schema";
-import { eq, and } from "drizzle-orm";
+import { eq, and, inArray } from "drizzle-orm";
 import { generateId } from "better-auth";
 import { auth } from "@/app/lib/auth";
 import { headers } from "next/headers";
@@ -99,4 +99,34 @@ export async function addTeamMemberServer(teamId: string, userId: string, role: 
     });
 
     return { success: true };
+}
+
+export async function getVisibleTeamsServer(organizationId: string) {
+    const session = await auth.api.getSession({ headers: await headers() });
+    if (!session) {
+        return { data: [], error: { message: "Unauthorized" } };
+    }
+
+    const userId = session.user.id;
+
+    // We fetch teams where the user is explicitly a member of the team
+    const userTeamMemberships = await db.query.teamMember.findMany({
+        where: eq(teamMember.userId, userId),
+    });
+
+    if (userTeamMemberships.length === 0) {
+        return { data: [], error: null };
+    }
+
+    const teamIds = userTeamMemberships.map(tm => tm.teamId);
+
+    // Fetch the teams that belong to this organization AND the user is a member of
+    const visibleTeams = await db.query.team.findMany({
+        where: and(
+            eq(team.organizationId, organizationId),
+            inArray(team.id, teamIds)
+        ),
+    });
+
+    return { data: visibleTeams, error: null };
 }

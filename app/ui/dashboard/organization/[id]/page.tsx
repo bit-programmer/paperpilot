@@ -9,6 +9,7 @@ import { clientPaths } from "@/app/utils/path.client";
 import { authClient } from "@/app/lib/auth-client";
 import { toast } from "sonner";
 import { CreateTeamModal } from "./components/CreateTeamModal";
+import { useVisibleTeams } from "@/app/hooks/useVisibleTeams";
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
 const MailSentIcon = () => (
@@ -342,6 +343,7 @@ export default function OrganizationDashboard({ params }: { params: Promise<{ id
 
     const { organization: org, loading: orgLoading, refetch: refetchOrg } = useFullOrganization(id);
     const { invitations: sentInvitations, loading: sentLoading, refetch: refetchInvites } = useSentInvitations(id);
+    const { teams: visibleTeams, loading: visibleTeamsLoading, refetch: refetchTeams } = useVisibleTeams(id);
 
     const [showInviteModal, setShowInviteModal] = useState(false);
     const [showCreateTeamModal, setShowCreateTeamModal] = useState(false);
@@ -510,7 +512,7 @@ export default function OrganizationDashboard({ params }: { params: Promise<{ id
                         {/* ── Teams ── */}
                         <div style={{ gridColumn: "1 / -1" }}>
                             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-                                <SectionHeader icon={<TeamIcon />} title="Teams" count={org.teams?.length || 0} />
+                                <SectionHeader icon={<TeamIcon />} title="Teams" count={visibleTeams.length} />
                                 <button
                                     onClick={() => setShowCreateTeamModal(true)}
                                     style={{
@@ -523,11 +525,15 @@ export default function OrganizationDashboard({ params }: { params: Promise<{ id
                                     <PlusIcon /> Create Team
                                 </button>
                             </div>
-                            {!org.teams?.length ? (
-                                <EmptyState label="No teams in this organization yet." />
+                            {visibleTeamsLoading ? (
+                                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 14 }}>
+                                    {[1, 2].map(i => <SkeletonRow key={i} />)}
+                                </div>
+                            ) : !visibleTeams.length ? (
+                                <EmptyState label="You are not a member of any teams in this organization yet." />
                             ) : (
                                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 14 }}>
-                                    {org.teams.map((team) => (
+                                    {visibleTeams.map((team) => (
                                         <TeamRow key={team.id} team={team} onClick={() => router.push(clientPaths.organizationPage.getHref(id) + `/team/${team.id}`)} />
                                     ))}
                                 </div>
@@ -551,7 +557,7 @@ export default function OrganizationDashboard({ params }: { params: Promise<{ id
                 isOpen={showCreateTeamModal}
                 onClose={() => setShowCreateTeamModal(false)}
                 organizationId={id}
-                onSuccess={() => refetchOrg()}
+                onSuccess={() => { refetchOrg(); refetchTeams(); }}
             />
         </>
     );

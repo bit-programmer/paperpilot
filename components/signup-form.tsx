@@ -5,6 +5,7 @@ import { authClient } from "@/app/lib/auth-client";
 import { logger } from "@/app/lib/logger.client";
 import { clientPaths } from "@/app/utils/path.client";
 import { Button } from "@/components/ui/button"
+import Link from "next/link";
 import {
   Card,
   CardContent,
@@ -82,11 +83,8 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
             <FieldGroup>
               <Field>
                 <Button type="submit" disabled={loading}>Create Account</Button>
-                <Button variant="outline" type="button">
-                  Sign up with Google
-                </Button>
                 <FieldDescription className="px-6 text-center">
-                  Already have an account? <a href="#">Sign in</a>
+                  Already have an account? <Link href={clientPaths.signin.getHref()} className="hover:underline text-primary">Sign in</Link>
                 </FieldDescription>
               </Field>
             </FieldGroup>
