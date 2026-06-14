@@ -44,8 +44,8 @@ export default function ArticleEditorPage() {
             setMyNotes(myReview?.notes || "");
             
             // Initialize checklist
-            let loadedChecklist = myReview?.checklist;
-            if (!loadedChecklist || loadedChecklist.length === 0) {
+            let loadedChecklist = myReview?.checklist as any[];
+            if (!Array.isArray(loadedChecklist) || loadedChecklist.length === 0) {
                 loadedChecklist = DEFAULT_CHECKLIST.map(c => ({ ...c, completed: false }));
             }
             setMyChecklist(loadedChecklist);

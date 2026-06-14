@@ -20,7 +20,7 @@ export function ArticleReviewWorkspace({ teamId }: ArticleReviewWorkspaceProps) 
     const [filterDecision, setFilterDecision] = useState<string>("All");
 
     // Form state for current user's review
-    const [reviewState, setReviewState] = useState<Record<string, { decision: string; priority: string; notes: string }>>({});
+    const [reviewState, setReviewState] = useState<Record<string, { decision: string; priority: string; notes: string; checklist?: any[] }>>({});
     
     const { data: session } = authClient.useSession();
     const currentUserId = session?.user?.id;
@@ -39,7 +39,8 @@ export function ArticleReviewWorkspace({ teamId }: ArticleReviewWorkspaceProps) 
                 newReviewState[art.id] = {
                     decision: myReview?.decision || "Unreviewed",
                     priority: myReview?.priority || "Medium",
-                    notes: myReview?.notes || ""
+                    notes: myReview?.notes || "",
+                    checklist: myReview?.checklist || []
                 };
             });
             setReviewState(newReviewState);
