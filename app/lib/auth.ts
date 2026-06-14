@@ -80,7 +80,7 @@ export const auth = betterAuth({
             sendInvitationEmail: async (data: any) => {
                 const { invitation, inviter, organization: org } = data;
                 // Construct URL explicitly since better-auth no longer provides it in the payload
-                const url = `${env.NEXT_PUBLIC_BETTER_AUTH_URL}/ui/dashboard`;
+                const url = `${env.BETTER_AUTH_URL}/ui/dashboard`;
                 logger.info(
                     { inviteeEmail: invitation.email, orgId: org.id, role: invitation.role },
                     "Sending org invitation email"

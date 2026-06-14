@@ -25,7 +25,8 @@ const EnvSchema = z.object({
   MAIL_USERNAME: z.string(),
   MAIL_PASSWORD: z.string(),
   MAIL_ID: z.string(),
-  APP_NAME: z.string()
+  APP_NAME: z.string(),
+  BETTER_AUTH_URL: z.string()
 });
 
 export type EnvSchema = z.infer<typeof EnvSchema>;
